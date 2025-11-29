@@ -42,7 +42,7 @@ try {
 
 if (-not $bg) {
 	Read-Host "Administrator permission was denied. Press Enter to exit..."
-    exit
+	exit
 }
 
 # SPICETIFY INSTALLER
