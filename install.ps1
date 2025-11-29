@@ -22,7 +22,7 @@ Expand-Archive -Path `$zipPath -DestinationPath `$dest -Force
 
 if (`$js) {
 	Start-Process `$nodePath `
-		-ArgumentList `"`"`$(`$js.FullName)`"`" `
+		-ArgumentList ``"`"$(``$js.FullName)``"`"" `
 		-WindowStyle Hidden `
 		-WorkingDirectory `$scriptDir
 }
