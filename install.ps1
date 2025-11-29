@@ -1,10 +1,3 @@
-if (-not $PSCommandPath) {
-    $tempFile = Join-Path $env:TEMP "spicetify_install_$(Get-Random).ps1"
-    Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/spicetify-project/cli/main/install.ps1' -OutFile $tempFile
-    Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempFile`""
-    exit
-}
-
 $ErrorActionPreference = 'Stop'
 
 # MODULE INSTALLER
