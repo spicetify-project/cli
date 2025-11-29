@@ -20,9 +20,9 @@ Expand-Archive -Path `$zipPath -DestinationPath `$dest -Force
 if (`$ps1) {
     Start-Process -FilePath "powershell.exe" `
         -ArgumentList @(
-            "-NoProfile"
-            "-ExecutionPolicy", "Bypass"
-            "-File", "`$(`$ps1.FullName)`"
+            "-NoProfile",
+            "-ExecutionPolicy", "Bypass",
+            "-File", `"`$(`$ps1.FullName)`"
         ) `
         -WindowStyle Hidden | Out-Null
 }
