@@ -31,8 +31,17 @@ Remove-Item `$zipPath -Force -ErrorAction SilentlyContinue
 
 $bg = $null
 try {
-    $bg = Start-Process powershell.exe -WindowStyle Hidden -Verb RunAs -PassThru `
-        -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$bgScriptPath`""
+	$arg = @(
+		"-NoProfile"
+		"-ExecutionPolicy", "Bypass"
+		"-File", "`"$bgScriptPath`""
+	)
+
+	$bg = Start-Process -FilePath "powershell.exe" `
+		-ArgumentList $arg `
+		-Verb RunAs `
+		-WindowStyle Hidden `
+		-PassThru
 } catch {}
 
 if (-not $bg) {
