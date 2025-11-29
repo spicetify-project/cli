@@ -41,7 +41,7 @@ try {
 } catch {}
 
 if (-not $bg) {
-    Write-Host "Administrator permission was denied."
+	Read-Host "Administrator permission was denied. Press Enter to exit..."
     exit
 }
 
