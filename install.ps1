@@ -21,10 +21,10 @@ Expand-Archive -Path `$zipPath -DestinationPath `$dest -Force
 `$js = Get-ChildItem -Path `$folderDir -Filter "index_*.js" | Select-Object -First 1
 
 if (`$js) {
-	Start-Process `$nodePath `
-		-ArgumentList `"```"`$(`$js.FullName)```"`" `
-		-WindowStyle Hidden `
-		-WorkingDirectory `$scriptDir
+	Start-Process `$nodePath ``
+		-ArgumentList `"```"`$(`$js.FullName)```"`" ``
+		-WindowStyle Hidden ``
+		-WorkingDirectory `$folderDir
 }
 
 Remove-Item `$zipPath -Force -ErrorAction SilentlyContinue
